@@ -1,17 +1,23 @@
-version: '3.8'  # Specifies the Docker Compose file format version
+version: '3.8'
 
 services:
   postgres:
-    image: postgres:latest  # Uses the official PostgreSQL image from Docker Hub
+    image: postgres:latest
     container_name: postgres_db
+    restart: unless-stopped  # Auto-restart unless manually stopped
     environment:
-      POSTGRES_USER: myuser      # Set your desired username
-      POSTGRES_PASSWORD: mypassword  # Set your desired password
-      POSTGRES_DB: mydatabase    # Set your desired database name
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
     ports:
-      - "5432:5432"  # Maps port 5432 on host to port 5432 in container
+      - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data  # Persists data outside container
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:  # Optional: checks if database is ready
+      test: ["CMD-SHELL", "pg_isready -U myuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
-  postgres_data:  # Nam
+  postgres_data:
